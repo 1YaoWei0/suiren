@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using static suiren.Services.AzureOpenaiApiService;
 
 namespace suiren
 {
@@ -59,53 +60,47 @@ namespace suiren
         {           
             string responseString = string.Empty;
             string input = inputBox.Text;
-            RestClient restClient = ClientFactory.CreateDskHttpClient();
-            OpenaiApiService openaiApiService = new OpenaiApiService(restClient);
+            //RestClient restClient = ClientFactory.CreateDskHttpClient();
+            //OpenaiApiService openaiApiService = new OpenaiApiService(restClient);
 
-            AddMessageToPanel(input, "User");
-            clearInputInfo();
+            //AddMessageToPanel(input, "User");
+            //clearInputInfo();
 
-            messages.Add(new
-            {
-                content = input,
-                role = "user"
-            });
+            //messages.Add(new
+            //{
+            //    content = input,
+            //    role = "user"
+            //});
 
-            var request = new
-            {
-                messages,
-                model = "deepseek-chat",
-                frequency_penalty = 0,
-                max_tokens = 2048,
-                presence_penalty = 0,
-                response_format = new
-                {
-                    type = "text"
-                },
-                stop = (string)null,
-                stream = false,
-                stream_options = (string)null,
-                temperature = 1,
-                top_p = 1,
-                tools = (string)null,
-                tool_choice = "none",
-                logprobs = false,
-                top_logprobs = (string)null
-            };
+            //var request = new
+            //{
+            //    messages,
+            //    model = "deepseek-chat",
+            //    frequency_penalty = 0,
+            //    max_tokens = 2048,
+            //    presence_penalty = 0,
+            //    response_format = new
+            //    {
+            //        type = "text"
+            //    },
+            //    stop = (string)null,
+            //    stream = false,
+            //    stream_options = (string)null,
+            //    temperature = 1,
+            //    top_p = 1,
+            //    tools = (string)null,
+            //    tool_choice = "none",
+            //    logprobs = false,
+            //    top_logprobs = (string)null
+            //};
 
-            var body = JsonConvert.SerializeObject(request);
+            //var body = JsonConvert.SerializeObject(request);
 
-            var response = await openaiApiService.GetDskDataAsync(body).ConfigureAwait(false);            
+            //var response = await openaiApiService.GetDskDataAsync(body).ConfigureAwait(false);
 
-            response.Choices.ForEach(choice =>
-            {
-                if (choice.Message.Role == "assistant")
-                {
-                    responseString = choice.Message.Content;
-                }                    
-            });
+            string result = await AzureOpenaiApiService.GetOpenAIResponse(input).ConfigureAwait(false);
 
-            AddMessageToChat(responseString, false);
+            AddMessageToChat(result, false);
         }
 
         private void clearInputInfo()
